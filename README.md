@@ -37,4 +37,4 @@ The various mechanisms can be combined and weighed and used as an error metric /
 
 - [Adaptive Poisson disk sampler](https://github.com/Evelios/adaptive-poisson-sampling) by Evelios
 - [RBush](https://github.com/mourner/rbush) by Mourner
-- [geotiff.js]
+- [geotiff.js](https://github.com/geotiffjs/geotiff.js/)
