@@ -29,7 +29,7 @@ Execution time scales with output size, and not input size. Thus low-fidelity te
 - Decimating a 3200 x 2400 GeoTIFF (15.5 mill triangles) down to 30% (4.7 mill triangles) takes 25 seconds and uses approx 250 MB memory.
 - Decimating a 3200 x 2400 GeoTIFF (15.5 mill triangles) down to 5% (770 k triangles) takes 6 seconds and uses approx 40 MB memory.
 
-All run times are measured on a MacBook Air M1 (2020), 16GB RAM.
+All run times are measured on a MacBook Air M1 (2020), 16GB RAM. RAM usage is as reported by node.js' process.memoryUsage().heapUsed.
 
 ## Weak points
 
