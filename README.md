@@ -7,18 +7,18 @@ Instead of solving the simplification problem bottom up, by merging near-coplana
 
 ## How?
 
-** Read in a height map
-** Use a function to generate a set of points where the terrain (height) should be sampled
-** Sample the height at these points
-** Do Delaunay triangulation of the points
-** Write the mesh out to a file
+- Read in a height map
+- Use a function to generate a set of points where the terrain (height) should be sampled
+- Sample the height at these points
+- Do Delaunay triangulation of the points
+- Write the mesh out to a file
 
 ## Performance
 
 Execution time scales with output size, and not input size. Sample point generation and triangulation are the main contributors to the run time This way producing low-fidelity terrain is very fast.
 
-** Decimating a 3200 x 2400 GeoTIFF (15.5 mill triangles) down to 30% (4.7 mill triangles) takes 25 seconds and uses approx 250 MB memory.
-** Decimating a 3200 x 2400 GeoTIFF (15.5 mill triangles) down to 5% (770 k triangles) takes 6 seconds and uses approx 40 MB memory.
+- Decimating a 3200 x 2400 GeoTIFF (15.5 mill triangles) down to 30% (4.7 mill triangles) takes 25 seconds and uses approx 250 MB memory.
+- Decimating a 3200 x 2400 GeoTIFF (15.5 mill triangles) down to 5% (770 k triangles) takes 6 seconds and uses approx 40 MB memory.
 
 All run times are measured on a MacBook Air M1 (2020), 16GB RAM.
 
@@ -27,9 +27,9 @@ All run times are measured on a MacBook Air M1 (2020), 16GB RAM.
 
 The sample point generator is a weighted Poisson disk sampler. It takes a function as input for the generator. The function should return the desired point distance (sample density) at a provided location. This way one can build custom and flexible sampling mechanisms - such as:
 
-** Regular sampling: Fixed distance between points
-** Focus points: Higher terrain fidelity at given locations
-** Curvature: Use lower fidelity at coplanar areas
+- Regular sampling: Fixed distance between points
+- Focus points: Higher terrain fidelity at given locations
+- Curvature: Use lower fidelity at coplanar areas
 
 The various mechanisms can be combined and weighed and used as an error metric / heuristic to guide the decimation process - similar to the more common algorithms. 
 
