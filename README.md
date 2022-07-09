@@ -6,7 +6,9 @@ Covert a height map (GeoTIFF) to a mesh (an OBJ file) while doing adaptive decim
 Output from decimation of 15.7 mill triangles down to 190k - taking 4 seconds and using 40 MB RAM.
 
 ## Why?
-If you need extremely fast, robust, simple and memory efficient mesh generation from a height map, the otherwise common edge-collapse methods do not fit well. Instead of looking at the simplification process bottom-up (collapsing edges connecting near-coplanar triangles and adjusting the surrounding geometry afterwards), one can also look at simplification top-down (as a sampling problem): Given a high-resolution terrain surface, where should it be sampled - in order to maximize the fidelity of the output, a lower-resolution version?
+If you need extremely fast, robust, simple and memory efficient mesh generation from a height map, the otherwise common edge-collapse methods do not fit well. 
+
+Instead of looking at the simplification process bottom-up (collapsing edges of near-coplanar triangles, and adjusting the geometry afterwards), one can also look at simplification top-down (as a sampling problem). Given a high-resolution terrain surface, it can also be sampled at specific locations, and the resulting point cloud could be triangulated into a mesh. 
 
 ## How?
 
@@ -18,13 +20,15 @@ If you need extremely fast, robust, simple and memory efficient mesh generation 
 
 ## Details
 
-The sample point generator is based on a Poisson disk sampler. This gives evenly distributed points. In addition, the sampler takes as input a function that guides the sampling process: This custom function should, for a given location, provide the desired point distance (sample density) at the location. This way one can build custom and flexible sampling mechanisms - such as:
+Given a input terrain, where should it be sampled - in order to maximize the fidelity of the output, a lower-resolution version, perhaps with some given triangle budget?
+
+The sample point generator is based on a Poisson disk sampler. This gives evenly distributed sample points. In addition, the sampler takes as input a function that guides the sampling process: This custom function needs to, for a given location, provide the desired point distance (sample density) at the location. This way one can build custom and flexible sampling heuristics - such as:
 
 - Regular sampling: A fixed distance between points
 - Points of interest: Higher sample density at given fixed, geographical locations
 - Curvature: Higher sample density where there are sudden changes in the terrain
 
-The various mechanisms can be combined and weighed. Together they form an error metric/heuristic to guide the decimation process - similar to what the more classical terrain simplification algorithms use. But in contrast, geometry is here not changed incrementally. This adds to the speed, simplicity and robustness of this method.
+The various mechanisms can be combined and weighed. Together they form a heuristic to guide the decimation process - somewhat similar to what the more classical terrain simplification algorithms use. But in contrast this method runs top-down and builds a complete mesh from scratch. Geometry is here not changed incrementally, and this adds to the speed, simplicity and robustness of the method.
 
 ## Performance
 
