@@ -3,7 +3,7 @@ Covert a height map (GeoTIFF) to a mesh (an OBJ file) while doing adaptive decim
 
 ![](https://github.com/kristoffer-dyrkorn/terrain-decimator/blob/main/images/mesh.jpg)
 
-Output from decimation of 15.7 mill triangles to 190k - taking 4 seconds and using 40 MB RAM.
+Output from decimation of 15.7 mill triangles down to 190k - taking 4 seconds and using 40 MB RAM.
 
 ## Why?
 If you need extremely fast, robust, simple and memory efficient mesh generation from a height map, the otherwise common edge-collapse methods do not fit well. Instead of looking at the simplification process bottom-up (collapsing edges connecting near-coplanar triangles and adjusting the surrounding geometry afterwards), one can also look at simplification top-down (as a sampling problem): Given a high-resolution terrain surface, where should it be sampled - in order to maximize the fidelity of the output, a lower-resolution version?
