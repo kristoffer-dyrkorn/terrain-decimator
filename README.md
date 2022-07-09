@@ -26,10 +26,12 @@ The various mechanisms can be combined and weighed. They form an error metric/he
 
 Execution time scales with output size, and not input size. Thus low-fidelity terrains can be produced very fast. Sample point generation and triangulation are the main contributors to the run time.
 
-- Decimating a 3200 x 2400 GeoTIFF (15.5 mill triangles) down to 30% (4.7 mill triangles) takes 25 seconds and uses approx 250 MB memory.
-- Decimating a 3200 x 2400 GeoTIFF (15.5 mill triangles) down to 5% (770 k triangles) takes 6 seconds and uses approx 40 MB memory.
+Some results from decimating a 3200 x 2400 GeoTIFF (15.5 mill triangles):
 
-All run times are measured on a MacBook Air M1 (2020), 16GB RAM. RAM usage is as reported by node.js' process.memoryUsage().heapUsed.
+- Reducing triangle count to 30% (4.7 mill triangles) takes 25 seconds and uses approx 250 MB memory.
+- Reducing triangle count to 5% (770 k triangles) takes 6 seconds and uses approx 40 MB memory.
+
+All run times are measured on a MacBook Air M1 (2020), 16GB RAM. RAM usage is as reported by process.memoryUsage().heapUsed in node.
 
 ## Weak points
 
