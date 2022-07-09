@@ -1,6 +1,8 @@
 # terrain-decimator
 Covert a height map (GeoTIFF) to a mesh (an OBJ file) while doing adaptive decimation.
 
+![](https://github.com/kristoffer-dyrkorn/terrain-decimator/blob/main/images/mesh.png)
+
 ## Why?
 If you need extremely fast, robust, simple and memory efficient mesh generation from a height map, the otherwise common edge-collapse methods do not fit well. Instead of looking at the simplification process bottom-up (collapsing edges connecting near-coplanar triangles and adjusting the surrounding geometry afterwards), one can also look at simplification top-down (as a sampling problem): Given a high-resolution terrain surface, where should I sample it - in order to maximize the fidelity of some lower-resolution version?
 
