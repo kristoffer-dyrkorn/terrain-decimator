@@ -8,43 +8,43 @@ Output from decimation of 15.7 mill triangles down to 190k - taking 4 seconds an
 ## Why?
 If you need extremely fast, robust, simple and memory efficient mesh generation from a height map, the otherwise common edge-collapse methods do not fit well. 
 
-Instead of looking at the simplification process bottom-up (collapsing edges of near-coplanar triangles, and adjusting the geometry afterwards), one can also look at simplification top-down (as a sampling problem). Given a high-resolution terrain surface, it can also be sampled at specific locations, and the resulting point cloud could be triangulated into a mesh. 
+Some simplification algorithms work bottom-up - they start with a full-resoulution mesh, collapse the edges of near-coplanar triangles, and retriangulate the surrounding geometry afterwards. However, one can instead look at simplification as a top-down process - as a sampling problem. Given a high-resolution terrain surface, it can be reconstructed from a set of sample points - of the original terrain surface - that are then retriangulated.
 
 ## How?
 
 - Read in a height map
-- Use a function to generate a set of points (locations in the x-y plane) where the terrain should be sampled
-- Sample the height (and other attributes such as color, texture coordinates, etc) at these points
-- Do Delaunay triangulation of the points
+- Use a function to generate a set of sample points (locations in the x-y plane)
+- Sample the terrain attributes - such as elevation, color, texture coordinates, etc at these points
+- Triangulate the points
 - Write the mesh out to a file
 
 ## Details
 
-Given a input terrain, where should it be sampled - in order to maximize the fidelity of the output, a lower-resolution version, perhaps with some given triangle budget?
+Given a input terrain, where should the samples be located - in order to give the best surface approximation within a specified triangle budget?
 
-The sample point generator is based on a Poisson disk sampler. This gives evenly distributed sample points. In addition, the sampler takes as input a function that guides the sampling process: This custom function needs to, for a given location, provide the desired point distance (sample density) at the location. This way one can build custom and flexible sampling heuristics - such as:
+The sample points should be evenly spaced. This will lead to ("round triangles") in the triangulation. To support this, the sample point generator is based on a Poisson disk sampler. In addition, the sampler uses a weighing function as a guide for the point selection process: The function must - for some location - output the desired sample density at that location. This enables custom and flexible sampling strategies - some examples:
 
 - Regular sampling: A fixed distance between points
-- Points of interest: Higher sample density at given fixed, geographical locations
-- Curvature: Higher sample density where there are sudden changes in the terrain
+- Points of interest: Higher sample density at given geographical locations
+- Curvature: Higher sample density where there is more detail
 
-The various mechanisms can be combined and weighed. Together they form a heuristic to guide the decimation process - somewhat similar to what the more classical terrain simplification algorithms use. But in contrast this method runs top-down and builds a complete mesh from scratch. Geometry is here not changed incrementally, and this adds to the speed, simplicity and robustness of the method.
+Various mechanisms can be combined and weighed. Together they guide the sampling process - and thereby also the decimation process. They form a metric, similar to what classical terrain simplification algorithms use, but in contrast the method described here builds a mesh incrementally, starting with nothing and adding points one at a time. Geometry is never modified in-place, and this adds to the speed, simplicity and robustness of this method.
 
 ## Performance
 
-Execution time typically grows with output size, and not input size. Thus low-fidelity terrains can be produced very fast. Sample point generation and triangulation are the main contributors to the run time.
+Execution time typically grows with output size, and not input size. Thus low-polygon approximations can be produced very fast. Generation of sample points and the Delaunay triangulation take most of the run time.
 
 Some results from decimating a 3200 x 2400 GeoTIFF (15.5 mill triangles):
 
 - Reducing triangle count to 30% (4.7 mill triangles) takes 25 seconds and uses approx 250 MB memory.
 - Reducing triangle count to 5% (770 k triangles) takes 6 seconds and uses approx 40 MB memory.
 
-All run times are measured on a MacBook Air M1 (2020), 16GB RAM. RAM usage is as reported by process.memoryUsage().heapUsed in node.
+All results are measured on a MacBook Air M1 (2020), 16GB RAM. RAM usage is as reported by the node call process.memoryUsage().heapUsed.
 
 ## Weak points
 
-- Poisson sampling is a random process. As of now the code uses a non-deterministic random generator (Math.random()). This means that two simplification runs on the same input will produce two different outpus. This should be mitigated with a deterministic random generator having a constant seed.
-- The function that guides the sampling process does not consider the approximation error at a given sample count. It is unlikely that this method can provide geometric error bounds (ie bounds on vertical error) for the output. However, the sample density provides an indirect metric of the approximation error at a given location. As such, this method is better suited for target triangle counts as the main simplification heuristic. 
+- Poisson sampling is a random process. Right now the code uses a non-deterministic random generator (Math.random()). This means that two simplification runs on the same input will produce two different outpus. This should be mitigated with a deterministic random generator having a constant seed.
+- The function that guides the sampling process does not consider the approximation error at a given sample count. It is unlikely that this method can provide precise geometric error bounds for the output. However, the sample density will provide an indirect measure of the approximation error at a given location. As such, this method is perhaps better suited for triangle budgets as the simplification driver - and not approximation error. 
 
 ## Credits
 
