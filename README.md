@@ -30,11 +30,11 @@ The sample points should be evenly spaced, ensuring ("round triangles") in the o
 - Points of interest: Higher sample density at given geographical locations
 - Curvature: Higher sample density where there is more detail
 
-Various mechanisms can be combined and weighed. Together they guide the sampling process - and thereby also the decimation process. They form a metric, similar to what classical terrain simplification algorithms use, but in contrast the method described here builds a mesh incrementally, starting with nothing and adding points one at a time. Geometry is never modified in-place, and this adds to the speed, simplicity and robustness of this method.
+Various strategies can be combined and weighed. Together they guide the sampling process - and thereby also the decimation process. They form a metric, similar to what classical terrain simplification algorithms use, but in contrast the method described here builds a mesh incrementally, starting with nothing and adding points one at a time. Geometry is never modified in-place, and this adds to the speed, simplicity and robustness of this method.
 
 ## Performance
 
-Execution time typically grows with output size, and not input size. Thus low-polygon approximations can be produced very fast. Generation of sample points and the Delaunay triangulation take most of the run time.
+Execution time typically scales with output size, and not input size. Thus low-polygon approximations can be produced very quickly. Sample point generation and triangulation takes most of the run time.
 
 Some results from decimating a 3200 x 2400 GeoTIFF (15.5 mill triangles):
 
