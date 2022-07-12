@@ -46,7 +46,7 @@ All results are measured on a MacBook Air M1 (2020), 16GB RAM. RAM usage is as r
 ## Weak points
 
 - Poisson sampling is a random process. Right now the code uses a non-deterministic random generator (Math.random()). This means that two simplification runs on the same input will produce two different outpus. This should be mitigated with a deterministic random generator having a constant seed.
-- The function that guides the sampling process does not consider the approximation error at a given sample count. It is unlikely that this method can provide precise geometric error bounds for the output. However, the sample density will provide an indirect measure of the approximation error at a given location. As such, this method is perhaps better suited for triangle budgets as the simplification driver - and not approximation error. Put differently, it trades simplification accuracy with speed and robustness.  
+- The function that guides the sampling process does not consider the geometric approximation error at a given sample count. It is unlikely that this method can provide precise error bounds for the output. However, the sample density will give an indirect measure of the terrain approximation error at a given sample location. As such, this method is perhaps better suited for situations where triangle budgets - and not approximation errors - is most important. Put differently, this method trades simplification accuracy with speed and robustness.  
 
 ## Credits
 
