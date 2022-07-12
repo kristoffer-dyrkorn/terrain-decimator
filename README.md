@@ -8,7 +8,9 @@ Output from decimation of 15.7 mill triangles down to 190k - taking 4 seconds an
 ## Why?
 If you need extremely fast, robust, simple and memory efficient mesh generation from a height map, the otherwise common edge-collapse methods do not fit well. 
 
-Some simplification algorithms work bottom-up - they start with a full-resoulution mesh, collapse the edges of near-coplanar triangles, and retriangulate the surrounding geometry afterwards. However, one can instead look at simplification as a top-down process - as a sampling problem. Given a high-resolution terrain surface, it can be reconstructed from a set of sample points - of the original terrain surface - that are then retriangulated.
+These algorithms work bottom-up - they start with a full-resoulution mesh, collapse the edges of near-coplanar triangles, and retriangulate the local geometry afterwards. This is resource demanding - both memorywise and in cpu time. At the same time, the heuristics that guide simplification might depend on certain manually tuned parameters to avoid invalid geometry in the output - such as triangles that fold over the mesh or reversed winding orders.
+
+One can also look at simplification as a top-down process - a sampling problem. Given a high-resolution terrain surface, how should the surface be sampled to create a lower-resolution approximation? After a set of samples have been selected, they can be triangulated to produce a mesh surface. The steps in this process are well-known and robust, and guarantee artifact-free outputs.
 
 ## How?
 
@@ -20,9 +22,9 @@ Some simplification algorithms work bottom-up - they start with a full-resouluti
 
 ## Details
 
-Given a input terrain, where should the samples be located - in order to give the best surface approximation within a specified triangle budget?
+Given a input terrain, where should the samples be located - in order to produce an optimal surface approximation within a given triangle budget?
 
-The sample points should be evenly spaced. This will lead to ("round triangles") in the triangulation. To support this, the sample point generator is based on a Poisson disk sampler. In addition, the sampler uses a weighing function as a guide for the point selection process: The function must - for some location - output the desired sample density at that location. This enables custom and flexible sampling strategies - some examples:
+The sample points should be evenly spaced, ensuring ("round triangles") in the output mesh. This is ensured by using a sample generator that is based on a Poisson disk sampler. In addition, the sampler uses a weighing function to guide the point selection process: This function must - for some location - output the desired sample density at that location. This enables custom and flexible sampling strategies. Some examples:
 
 - Regular sampling: A fixed distance between points
 - Points of interest: Higher sample density at given geographical locations
@@ -44,7 +46,7 @@ All results are measured on a MacBook Air M1 (2020), 16GB RAM. RAM usage is as r
 ## Weak points
 
 - Poisson sampling is a random process. Right now the code uses a non-deterministic random generator (Math.random()). This means that two simplification runs on the same input will produce two different outpus. This should be mitigated with a deterministic random generator having a constant seed.
-- The function that guides the sampling process does not consider the approximation error at a given sample count. It is unlikely that this method can provide precise geometric error bounds for the output. However, the sample density will provide an indirect measure of the approximation error at a given location. As such, this method is perhaps better suited for triangle budgets as the simplification driver - and not approximation error. 
+- The function that guides the sampling process does not consider the approximation error at a given sample count. It is unlikely that this method can provide precise geometric error bounds for the output. However, the sample density will provide an indirect measure of the approximation error at a given location. As such, this method is perhaps better suited for triangle budgets as the simplification driver - and not approximation error. Put differently, it trades simplification accuracy with speed and robustness.  
 
 ## Credits
 
